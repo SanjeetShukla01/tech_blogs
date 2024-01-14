@@ -53,9 +53,9 @@ while(true) {
     processRetrievedRecords(records);
 }
 ```
-Such a program polls a batch of records, processes them, and then polls the next set. While calling the poll method, the consumer periodically commits the last offset of the previous batches transparently.
+Such a program polls a batch of records, processes them, and then polls the next set. While calling the `poll` method, the consumer periodically commits the last offset of the previous batches transparently.
 
-Quite nice, right? If the application fails to process a message, it throws an exception, which either interrupts the while loop or is handled gracefully (within the processRetrievedRecords method). In the first case, it means that it won’t commit anymore (as it happens in the poll method, not called anymore). If the application restarts, it resumes from the last committed offset (or apply the auto.offset.reset strategy, defaulting to latest, if there are no offsets for this group yet). It may re-process a set of messages (it’s the application’s responsibility to handle duplicates), but at least nothing is lost.
+Quite nice, right? If the application fails to process a message, it throws an exception, which either interrupts the while loop or is handled gracefully (within the `processRetrievedRecords` method). In the first case, it means that it won’t commit anymore (as it happens in the `poll` method, not called anymore). If the application restarts, it resumes from the last committed offset (or apply the `auto.offset.reset` strategy, defaulting to `latest`, if there are no offsets for this group yet). It may re-process a set of messages (it’s the application’s responsibility to handle duplicates), but at least nothing is lost.
 
 So, is there anything wrong with this? Looks wonderful…​ until you add a pinch of asynchrony.
 
