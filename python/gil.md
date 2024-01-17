@@ -7,9 +7,9 @@ of Python, to synchronize access to Python objects, preventing multiple native t
  such as Jython or IronPython.
  
 
-![gil_1.png](image/gil_1.png)
+![gil_1.png](images/gil_1.png)
 
-![gil_2.png](image/gil_2.png)
+![gil_2.png](images/gil_2.png)
 
 Key points about the Global Interpreter Lock (GIL):
 
