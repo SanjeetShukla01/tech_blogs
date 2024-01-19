@@ -56,3 +56,7 @@ pull_task = PythonOperator(
 push_task >> pull_task
 
 ```
+
+In this example, the push_task pushes the value "Hello, XCom!" to XCom using xcom_push. The pull_task then pulls the 
+value using xcom_pull and prints it. The provide_context=True parameter in the PythonOperator ensures that the task 
+receives the context, including the TaskInstance (ti), which is necessary for working with XCom.
