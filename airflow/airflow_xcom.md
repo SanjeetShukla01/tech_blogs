@@ -165,3 +165,5 @@ continue_task = PythonOperator(
 
 ```
 
+Here, {{ value_from_xcom }} is replaced by the value retrieved from XCom during the template rendering process.
+This way, you can dynamically reference XCom values within Jinja templates in your Airflow DAG.
