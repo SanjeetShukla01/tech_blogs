@@ -85,3 +85,46 @@ end_task = DummyOperator(task_id='end_task', dag=dag)
 # Define the task sequence
 start_task >> external_sensor_task >> end_task
 ```
+
+**File Sensor**
+```python
+
+from datetime import datetime, timedelta
+from airflow import DAG
+from airflow.operators.dummy_operator import DummyOperator
+from airflow.operators.sensors.filesystem import FileSensor
+
+# Define the default_args dictionary
+default_args = {
+    'owner': 'airflow',
+    'start_date': datetime(2022, 1, 1),
+    'retries': 1,
+    'retry_delay': timedelta(minutes=5),
+}
+
+# Instantiate a DAG
+dag = DAG(
+    'example_file_sensor',
+    default_args=default_args,
+    schedule_interval='@daily',
+)
+
+# Define tasks
+start_task = DummyOperator(task_id='start_task', dag=dag)
+
+# FileSensor waits for a file or directory to appear or be modified
+file_sensor_task = FileSensor(
+    task_id='file_sensor_task',
+    filepath='/path/to/your/file.txt',  # Specify the path to the file to monitor
+    poke_interval=60,  # Set the interval for checking (in seconds)
+    retries=3,  # Set the number of retries
+    mode='poke',  # Use 'poke' mode for actively checking
+    dag=dag,
+)
+
+end_task = DummyOperator(task_id='end_task', dag=dag)
+
+# Define the task sequence
+start_task >> file_sensor_task >> end_task
+```
+
