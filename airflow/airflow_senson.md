@@ -128,3 +128,46 @@ end_task = DummyOperator(task_id='end_task', dag=dag)
 start_task >> file_sensor_task >> end_task
 ```
 
+**HttpSensor Example:**
+```python
+from datetime import datetime, timedelta
+from airflow import DAG
+from airflow.operators.dummy_operator import DummyOperator
+from airflow.operators.sensors.http_sensor import HttpSensor
+
+# Define the default_args dictionary
+default_args = {
+    'owner': 'airflow',
+    'start_date': datetime(2022, 1, 1),
+    'retries': 1,
+    'retry_delay': timedelta(minutes=5),
+}
+
+# Instantiate a DAG
+dag = DAG(
+    'example_http_sensor',
+    default_args=default_args,
+    schedule_interval='@daily',
+)
+
+# Define tasks
+start_task = DummyOperator(task_id='start_task', dag=dag)
+
+# HttpSensor waits for a specific response from an HTTP endpoint
+http_sensor_task = HttpSensor(
+    task_id='http_sensor_task',
+    http_conn_id='http_default',  # Specify the HTTP connection ID configured in Airflow
+    endpoint='/path/to/your/endpoint',  # Specify the endpoint to check
+    request_params={},  # Optional parameters for the HTTP request
+    response_check=lambda response: True,  # Custom function to check the HTTP response
+    mode='poke',  # Use 'poke' mode for actively checking
+    poke_interval=60,  # Set the interval for checking (in seconds)
+    retries=3,  # Set the number of retries
+    dag=dag,
+)
+
+end_task = DummyOperator(task_id='end_task', dag=dag)
+
+# Define the task sequence
+start_task >> http_sensor_task >> end_task
+```
